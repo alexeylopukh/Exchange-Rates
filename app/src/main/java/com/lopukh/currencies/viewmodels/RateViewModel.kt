@@ -18,11 +18,29 @@ class RateViewModel : ViewModel() {
         GlobalScope.launch(Dispatchers.Main) {
             val response = repoModel.getResonse()
             if (response.isSuccessful){
-                rateList.set(response.body())
+                rateList.set(sort(response.body()!!))
             } else
             {
                 errorCode.set(response.code())
             }
         }
     }
+
+    fun sort(inputList: ArrayList<Rate>): ArrayList<Rate>{
+        val result = ArrayList<Rate>()
+        for (i in 0 until inputList.size){
+                if (inputList[i].curAbbreviation == "USD" ||
+                    inputList[i].curAbbreviation == "EUR" ||
+                    inputList[i].curAbbreviation == "RUB"){
+                    result.add(inputList[i])
+                }
+        }
+        for (i in 0 until result.size){
+            inputList.remove(result[i])
+        }
+        result.addAll(inputList)
+        return result
+    }
+
+
 }
